@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JCE Belagavi - AI College Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0a1628;
+      --navy-mid: #112240;
+      --gold: #d4a843;
+      --gold-light: #f0c55a;
+      --cream: #faf6ee;
+      --text: #e8dcc8;
+      --text-muted: #8a9bbf;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(212,168,67,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(17,34,64,0.9) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 1.2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(20px);
+      background: rgba(10, 22, 40, 0.85);
+      border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .nav-logo .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .nav-links { display: flex; gap: 1rem; align-items: center; }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--gold); background: rgba(212,168,67,0.1); }
+
+    .btn-nav {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy) !important;
+      font-weight: 600 !important;
+      padding: 0.5rem 1.4rem !important;
+    }
+
+    .btn-nav:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,168,67,0.4); background: rgba(212,168,67,0.1) !important; }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(212, 168, 67, 0.1);
+      border: 1px solid rgba(212, 168, 67, 0.3);
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .hero h1 span { color: var(--gold); }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy);
+      border: none;
+      padding: 0.9rem 2.2rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(212,168,67,0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 0.9rem 2.2rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      transform: translateY(-3px);
+    }
+
+    /* Floating chat bubble preview */
+    .chat-preview {
+      margin-top: 4rem;
+      background: rgba(17, 34, 64, 0.8);
+      border: 1px solid rgba(212, 168, 67, 0.2);
+      border-radius: 20px;
+      padding: 1.5rem;
+      max-width: 420px;
+      width: 100%;
+      animation: fadeUp 0.6s 0.4s ease both;
+      backdrop-filter: blur(10px);
+    }
+
+    .chat-header-mini {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid rgba(212,168,67,0.15);
+    }
+
+    .bot-avatar { 
+      width: 35px; height: 35px; 
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .chat-bubble {
+      padding: 0.7rem 1rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .bot-bubble {
+      background: rgba(212, 168, 67, 0.1);
+      border: 1px solid rgba(212, 168, 67, 0.2);
+      color: var(--text);
+      align-self: flex-start;
+    }
+
+    .user-bubble {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* Features */
+    .features {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 3rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: rgba(17, 34, 64, 0.6);
+      border: 1px solid rgba(212, 168, 67, 0.15);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(212, 168, 67, 0.4);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--gold);
+    }
+
+    .feature-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid rgba(212, 168, 67, 0.1);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer span { color: var(--gold); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-logo">
+      <div class="logo-icon">🎓</div>
+      JCE Belagavi
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="/chat">Chatbot</a>
+      <a href="/login">Login</a>
+      <a href="/register" class="btn-nav">Get Started</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">🤖 AI-Powered Virtual Assistant</div>
+    <h1>Your Smart<br /><span>College Guide</span></h1>
+    <p>Get instant answers about admissions, fees, courses, facilities, and more at Jain College of Engineering, Belagavi — available 24×7.</p>
+    <div class="hero-buttons">
+      <a href="/chat" class="btn-primary">🚀 Start Chatting</a>
+      <a href="#features" class="btn-secondary">Learn More</a>
+    </div>
+
+    <div class="chat-preview">
+      <div class="chat-header-mini">
+        <div class="bot-avatar">🤖</div>
+        <div>
+          <div style="font-weight:600;font-size:0.9rem">JCE Assistant</div>
+          <div style="font-size:0.75rem;color:var(--gold)">● Online</div>
+        </div>
+      </div>
+      <div class="chat-bubble bot-bubble">Hello! Welcome to JCE Belagavi! 👋 How can I help you today?</div>
+      <div class="chat-bubble user-bubble">What are the MCA fees?</div>
+      <div class="chat-bubble bot-bubble">MCA fees are ₹50,000 per semester. Total course fees: ₹2,00,000. Scholarships also available! 🎖️</div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <h2 class="section-title">Why Use Our <span style="color:var(--gold)">AI Assistant?</span></h2>
+    <p class="section-sub">Everything you need to know about JCE, instantly.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant Answers</h3>
+        <p>Get immediate responses to all your college queries — no waiting, no phone calls needed.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🕐</div>
+        <h3>24×7 Available</h3>
+        <p>Ask questions anytime — day or night. Our chatbot never sleeps so you don't have to wait.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎓</div>
+        <h3>Course Info</h3>
+        <p>Detailed information on MCA, BCA, and BE programs including fees, eligibility and subjects.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <h3>Admission Help</h3>
+        <p>Step-by-step guidance on the admission process, documents needed, and deadlines.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💼</div>
+        <h3>Placement Info</h3>
+        <p>Know about campus placements, average packages, and top recruiters.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏫</div>
+        <h3>Campus Guide</h3>
+        <p>Find any location on campus — labs, library, hostel, offices and more.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>🏛️ <span>Jain College of Engineering, Belagavi</span> | Department of MCA</p>
+    <p style="margin-top:0.5rem">Approved by AICTE, New Delhi | Team: <span>Matrix Surge - 13</span></p>
+  </footer>
+</body>
+</html>
